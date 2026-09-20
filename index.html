@@ -3,40 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lingua Flow</title>
+<title>Lingua Flow PRO</title>
 <style>
-body{font-family:system-ui;background:#0f172a;color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:15px}
-.card{background:#1e293b;padding:20px;border-radius:16px;width:100%;max-width:600px}
-h1{text-align:center}
-select,textarea,button{width:100%;padding:12px;border-radius:10px;border:none;font-size:16px;margin-top:10px}
-select{background:#334155;color:#fff}
-textarea{background:#0f172a;color:#fff;min-height:100px;border:1px solid #334155}
-button{background:#3b82f6;color:#fff;font-weight:bold}
+:root{--bg:#0f172a;--card:#1e293b;--text:#fff;--accent:#3b82f6}
+.light{--bg:#f1f5f9;--card:#fff;--text:#0f172a}
+body{font-family:system-ui;background:var(--bg);color:var(--text);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:15px}
+.card{background:var(--card);padding:22px;border-radius:18px;width:100%;max-width:650px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.row{display:flex;gap:10px;margin-top:12px}
+select,textarea,button{width:100%;padding:12px;border-radius:10px;border:none;font-size:16px}
+select{background:var(--bg);color:var(--text);border:1px solid #334155}
+textarea{background:var(--bg);color:var(--text);min-height:110px;border:1px solid #334155}
+button{background:var(--accent);color:#fff;font-weight:bold}
+.small{display:flex;justify-content:space-between;margin-top:8px;font-size:13px}
+.copy{color:var(--accent);cursor:pointer}
 </style>
 </head>
-<body>
+<body id="body">
 <div class="card">
-<h1>🌐 Lingua Flow Translator</h1>
-<div style="display:flex;gap:10px">
-<select id="from"><option value="en">English</option><option value="ur">Urdu</option><option value="ar">Arabic</option><option value="hi">Hindi</option></select>
-<select id="to"><option value="ur">Urdu</option><option value="en">English</option><option value="ar">Arabic</option><option value="hi">Hindi</option></select>
+<div class="top"><h1 style="margin:0">🌐 Lingua Flow PRO</h1><span onclick="document.getElementById('body').classList.toggle('light')" style="cursor:pointer">🌙</span></div>
+<div class="row">
+<select id="from"><option value="en">English</option><option value="ur">Urdu</option><option value="ar">Arabic</option><option value="hi">Hindi</option><option value="fr">French</option></select>
+<select id="to"><option value="ur">Urdu</option><option value="en">English</option><option value="ar">Arabic</option><option value="hi">Hindi</option><option value="fr">French</option></select>
 </div>
 <textarea id="input" placeholder="Type here..."></textarea>
-<button id="btn">Translate</button>
+<div class="row"><button id="btn">Translate</button><button style="background:#10b981" onclick="speakIn()">🎤</button></div>
 <textarea id="output" readonly placeholder="Translation..."></textarea>
+<div class="small"><span class="copy" onclick="navigator.clipboard.writeText(document.getElementById('output').value);alert('Copied!')">📋 Copy</span><span class="copy" onclick="let u=new SpeechSynthesisUtterance(document.getElementById('output').value);speechSynthesis.speak(u)">🔊 Listen</span></div>
 </div>
 <script>
 document.getElementById('btn').onclick=async()=>{
-let q=document.getElementById('input').value;
-if(!q)return;
-let f=document.getElementById('from').value;
-let t=document.getElementById('to').value;
-document.getElementById('btn').innerText='Translating...';
+let q=document.getElementById('input').value;if(!q)return;
+let f=document.getElementById('from').value,t=document.getElementById('to').value;
+document.getElementById('btn').innerText='...';
 let r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=${f}|${t}`);
-let d=await r.json();
-document.getElementById('output').value=d.responseData.translatedText;
+let d=await r.json();document.getElementById('output').value=d.responseData.translatedText;
 document.getElementById('btn').innerText='Translate';
 }
+function speakIn(){let rec=new(window.webkitSpeechRecognition||window.SpeechRecognition)();rec.lang=document.getElementById('from').value;rec.onresult=e=>{document.getElementById('input').value=e.results[0][0].transcript;document.getElementById('btn').click()};rec.start()}
 </script>
 </body>
 </html>
