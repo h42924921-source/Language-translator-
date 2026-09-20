@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lingua Flow</title>
+<style>
+body{font-family:system-ui;background:#0f172a;color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:15px}
+.card{background:#1e293b;padding:20px;border-radius:16px;width:100%;max-width:600px}
+h1{text-align:center}
+select,textarea,button{width:100%;padding:12px;border-radius:10px;border:none;font-size:16px;margin-top:10px}
+select{background:#334155;color:#fff}
+textarea{background:#0f172a;color:#fff;min-height:100px;border:1px solid #334155}
+button{background:#3b82f6;color:#fff;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>🌐 Lingua Flow Translator</h1>
+<div style="display:flex;gap:10px">
+<select id="from"><option value="en">English</option><option value="ur">Urdu</option><option value="ar">Arabic</option><option value="hi">Hindi</option></select>
+<select id="to"><option value="ur">Urdu</option><option value="en">English</option><option value="ar">Arabic</option><option value="hi">Hindi</option></select>
+</div>
+<textarea id="input" placeholder="Type here..."></textarea>
+<button id="btn">Translate</button>
+<textarea id="output" readonly placeholder="Translation..."></textarea>
+</div>
+<script>
+document.getElementById('btn').onclick=async()=>{
+let q=document.getElementById('input').value;
+if(!q)return;
+let f=document.getElementById('from').value;
+let t=document.getElementById('to').value;
+document.getElementById('btn').innerText='Translating...';
+let r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=${f}|${t}`);
+let d=await r.json();
+document.getElementById('output').value=d.responseData.translatedText;
+document.getElementById('btn').innerText='Translate';
+}
+</script>
+</body>
+</html>
