@@ -1,46 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lingua Flow PRO</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lingua Flow ULTIMATE</title>
 <style>
-:root{--bg:#0f172a;--card:#1e293b;--text:#fff;--accent:#3b82f6}
-.light{--bg:#f1f5f9;--card:#fff;--text:#0f172a}
-body{font-family:system-ui;background:var(--bg);color:var(--text);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:15px}
-.card{background:var(--card);padding:22px;border-radius:18px;width:100%;max-width:650px}
+:root{--bg:#0f172a;--card:#1e293b;--text:#fff;--accent:#3b82f6;--green:#10b981}
+body{font-family:system-ui;background:var(--bg);color:var(--text);display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:12px}
+.card{background:var(--card);padding:20px;border-radius:18px;width:100%;max-width:700px;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .top{display:flex;justify-content:space-between;align-items:center}
-.row{display:flex;gap:10px;margin-top:12px}
-select,textarea,button{width:100%;padding:12px;border-radius:10px;border:none;font-size:16px}
-select{background:var(--bg);color:var(--text);border:1px solid #334155}
-textarea{background:var(--bg);color:var(--text);min-height:110px;border:1px solid #334155}
-button{background:var(--accent);color:#fff;font-weight:bold}
-.small{display:flex;justify-content:space-between;margin-top:8px;font-size:13px}
+.row{display:flex;gap:8px;margin-top:12px}
+select,textarea,button{width:100%;padding:12px;border-radius:10px;border:1px solid #334155;font-size:15px}
+select{background:var(--bg);color:var(--text)} 
+textarea{background:var(--bg);color:var(--text);min-height:100px;resize:none}
+button{border:none;font-weight:bold;cursor:pointer}
+.small{display:flex;justify-content:space-between;margin-top:8px;font-size:13px;color:#94a3b8}
 .copy{color:var(--accent);cursor:pointer}
 </style>
 </head>
-<body id="body">
+<body>
 <div class="card">
-<div class="top"><h1 style="margin:0">🌐 Lingua Flow PRO</h1><span onclick="document.getElementById('body').classList.toggle('light')" style="cursor:pointer">🌙</span></div>
+<div class="top"><h2 style="margin:0">🌐 Lingua Flow ULTIMATE</h2><span onclick="document.body.style.filter=document.body.style.filter?'':'invert(1)'" style="cursor:pointer">🌙</span></div>
+
 <div class="row">
-<select id="from"><option value="en">English</option><option value="ur">Urdu</option><option value="ar">Arabic</option><option value="hi">Hindi</option><option value="fr">French</option></select>
-<select id="to"><option value="ur">Urdu</option><option value="en">English</option><option value="ar">Arabic</option><option value="hi">Hindi</option><option value="fr">French</option></select>
+<select id="from"></select>
+<select id="to"></select>
 </div>
+
 <textarea id="input" placeholder="Type here..."></textarea>
-<div class="row"><button id="btn">Translate</button><button style="background:#10b981" onclick="speakIn()">🎤</button></div>
-<textarea id="output" readonly placeholder="Translation..."></textarea>
-<div class="small"><span class="copy" onclick="navigator.clipboard.writeText(document.getElementById('output').value);alert('Copied!')">📋 Copy</span><span class="copy" onclick="let u=new SpeechSynthesisUtterance(document.getElementById('output').value);speechSynthesis.speak(u)">🔊 Listen</span></div>
+<div class="row">
+<button id="btn" style="background:var(--accent);color:#fff">Translate</button>
+<button style="background:var(--green);color:#fff" onclick="speakIn()">🎤</button>
 </div>
+
+<textarea id="output" readonly placeholder="Translation..."></textarea>
+<div class="small">
+<span class="copy" onclick="navigator.clipboard.writeText(output.value);alert('Copied!')">📋 Copy</span>
+<span class="copy" onclick="speechSynthesis.speak(new SpeechSynthesisUtterance(output.value))">🔊 Listen</span>
+</div>
+<p style="text-align:center;font-size:11px;color:#64748b;margin-top:12px">50+ Languages • Made in Chiniot, PK</p>
+</div>
+
 <script>
-document.getElementById('btn').onclick=async()=>{
-let q=document.getElementById('input').value;if(!q)return;
-let f=document.getElementById('from').value,t=document.getElementById('to').value;
-document.getElementById('btn').innerText='...';
-let r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=${f}|${t}`);
-let d=await r.json();document.getElementById('output').value=d.responseData.translatedText;
-document.getElementById('btn').innerText='Translate';
+const langs = {
+"en":"English","ur":"Urdu","ar":"Arabic","hi":"Hindi","fr":"French","de":"German","es":"Spanish","it":"Italian","pt":"Portuguese","ru":"Russian","tr":"Turkish","zh":"Chinese","ja":"Japanese","ko":"Korean","nl":"Dutch","pl":"Polish","id":"Indonesian","ms":"Malay","bn":"Bengali","pa":"Punjabi","ps":"Pashto","sd":"Sindhi","fa":"Persian","th":"Thai","vi":"Vietnamese","uk":"Ukrainian","el":"Greek","he":"Hebrew","ro":"Romanian","sv":"Swedish","no":"Norwegian","da":"Danish","fi":"Finnish","cs":"Czech","hu":"Hungarian","sk":"Slovak","bg":"Bulgarian","hr":"Croatian","sr":"Serbian","bs":"Bosnian","sq":"Albanian","az":"Azerbaijani","uz":"Uzbek","kk":"Kazakh","tg":"Tajik","sw":"Swahili","am":"Amharic","so":"Somali","ne":"Nepali","si":"Sinhala","my":"Myanmar","km":"Khmer","lo":"Lao","ka":"Georgian","hy":"Armenian","af":"Afrikaans"
+};
+let from=document.getElementById('from'), to=document.getElementById('to');
+for(let c in langs){from.innerHTML+=`<option value="${c}">${langs[c]}</option>`;to.innerHTML+=`<option value="${c}">${langs[c]}</option>`;}
+from.value='en'; to.value='ur';
+
+btn.onclick=async()=>{
+let q=input.value.trim(); if(!q) return;
+btn.innerText='...';
+let r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(q)}&langpair=${from.value}|${to.value}`);
+let d=await r.json(); output.value=d.responseData.translatedText;
+btn.innerText='Translate';
 }
-function speakIn(){let rec=new(window.webkitSpeechRecognition||window.SpeechRecognition)();rec.lang=document.getElementById('from').value;rec.onresult=e=>{document.getElementById('input').value=e.results[0][0].transcript;document.getElementById('btn').click()};rec.start()}
+function speakIn(){let rec=new(window.webkitSpeechRecognition||window.SpeechRecognition)();rec.lang=from.value;rec.onresult=e=>{input.value=e.results[0][0].transcript;btn.click()};rec.start();}
 </script>
 </body>
 </html>
